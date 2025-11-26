@@ -52,6 +52,7 @@ Los colores correponden a:
 | Backlight A | 5V (con resistencia de 220 Ω en serie) |
 | Backlight K | GND                                    |
 
+
 - Sensor de Temperatura y Humedad DHT11 (MORADO)
 | Señal | Pin |
 | ----- | --- |
@@ -96,11 +97,11 @@ Los colores correponden a:
 Ambos llevan resistencia de 220 Ω en serie y cátodo a GND.
 
 #### Capacidades especiales de los pines y motivos de su elección
-Pin 6 — Salida PWM
+- Pin 6 — Salida PWM
 
 Se utiliza para el LED indicador LED2, permitiendo variar su intensidad mediante ```analogWrite()``` como requiere la práctica.
 
-Pines 2 y 3 — Interrupciones externas (INT0 e INT1)
+- Pines 2 y 3 — Interrupciones externas (INT0 e INT1)
 
 Los dos botones (ADMIN y joystick SW) se conectan aquí para:
 detectar pulsaciones incluso si el micro está en otras tareas,
