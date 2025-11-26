@@ -32,77 +32,79 @@ Los colores correponden a:
 | **ROSA**     | LEDs         |
 | **MARRÓN**   | Botón        |
 | **MORADO**   | DHT11        |
-En la imagen exportada, la conexión al +5 V no aparece por error, aunque en el montaje real sí debe existir.
+
+> **Nota:** En la imagen exportada falta accidentalmente la conexión al pin **5V**, pero en el montaje real sí está presente.
+
+#### Conexiones por dispositivo
 
 - LCD 16×2 (NARANJA)
-
-RS → Pin 12
-
-E → Pin 11
-
-D4 → Pin 5
-
-D5 → Pin 4
-
-D6 → Pin A4
-
-D7 → Pin A0
-
-VSS → GND
-
-VDD → 5V
-
-RW → GND
-
-Backlight A → 5V (a través de resistencia serie 220)
-
-Backlight K → GND
+| Señal LCD   | Pin Arduino                            |
+| ----------- | -------------------------------------- |
+| RS          | 12                                     |
+| E           | 11                                     |
+| D4          | 5                                      |
+| D5          | 4                                      |
+| D6          | A4                                     |
+| D7          | A0                                     |
+| VSS         | GND                                    |
+| VDD         | 5V                                     |
+| RW          | GND                                    |
+| Backlight A | 5V (con resistencia de 220 Ω en serie) |
+| Backlight K | GND                                    |
 
 - Sensor de Temperatura y Humedad DHT11 (MORADO)
+| Señal | Pin |
+| ----- | --- |
+| DATA  | 7   |
+| VCC   | 5V  |
+| GND   | GND |
 
-DATA → Pin 7
-
-VCC → 5V
-
-GND → GND
 
 - Sensor Ultrasonidos HC-SR04 (AMARILLO)
+| Señal | Pin |
+| ----- | --- |
+| TRIG  | 9   |
+| ECHO  | 10  |
+| VCC   | 5V  |
+| GND   | GND |
 
-TRIG → Pin 9
-
-ECHO → Pin 10
-
-VCC → 5V
-
-GND → GND
 
 - Joystick (VERDE)
+| Señal | Pin |
+| ----- | --- |
+| VRx   | A1  |
+| VRy   | A2  |
+| SW    | 3   |
+| VCC   | 5V  |
+| GND   | GND |
 
-VRx → A1
+- Botón (MARRÓN)
 
-VRy → A2
+| Señal | Pin |
+| ----- | --- |
+| Señal | 2   |
+| Común | GND |
 
-SW → 3
-
-VCC → 5V
-
-GND → GND
-
-Botón ADMIN (MARRÓN)
-
-Señal → Pin 2 (modo INPUT_PULLUP)
-
-El botón se conecta a GND al pulsar.
 
 - LEDs indicadores (ROSA)
 
-LED1 → A3
+| LED  | Pin | Notas                                 |
+| ---- | --- | ------------------------------------- |
+| LED1 | A3  | Salida digital normal                 |
+| LED2 | 6   | **PWM**, usado para control de brillo |
 
-LED2 → 6
+Ambos llevan resistencia de 220 Ω en serie y cátodo a GND.
 
-Cada LED lleva en serie una resistencia de ≈220 Ω.
+#### Capacidades especiales de los pines y motivos de su elección
+Pin 6 — Salida PWM
 
-Cátodo de cada LED → GND
+Se utiliza para el LED indicador LED2, permitiendo variar su intensidad mediante ```analogWrite()``` como requiere la práctica.
+
+Pines 2 y 3 — Interrupciones externas (INT0 e INT1)
+
+Los dos botones (ADMIN y joystick SW) se conectan aquí para:
+detectar pulsaciones incluso si el micro está en otras tareas,
+garantizar que no se pierdan eventos, mantener una interfaz fluida y fiable.
 
 ## 3. Software y lógica de la máquina
 
