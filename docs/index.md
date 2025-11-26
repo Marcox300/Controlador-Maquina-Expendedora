@@ -4,6 +4,7 @@
 
 ## 2. Hardware y conexiones
 ![conexiones](../img/emp_espendedora.png)
+![conexiones](https://raw.githubusercontent.com/Marcox300/Controlador-Maquina-Expendedora/main/img/emp_espendedora.png)
 
 ## 3. Software y lógica de la máquina
 
