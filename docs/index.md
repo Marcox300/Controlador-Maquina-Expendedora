@@ -37,36 +37,55 @@ En la imagen exportada, la conexión al +5 V no aparece por error, aunque en el 
 - LCD 16×2 (NARANJA)
 
 RS → Pin 12
+
 E → Pin 11
+
 D4 → Pin 5
+
 D5 → Pin 4
+
 D6 → Pin A4
+
 D7 → Pin A0
+
 VSS → GND
+
 VDD → 5V
+
 RW → GND
+
 Backlight A → 5V (a través de resistencia serie 220)
+
 Backlight K → GND
 
 - Sensor de Temperatura y Humedad DHT11 (MORADO)
 
 DATA → Pin 7
+
 VCC → 5V
+
 GND → GND
 
 - Sensor Ultrasonidos HC-SR04 (AMARILLO)
 
 TRIG → Pin 9
+
 ECHO → Pin 10
+
 VCC → 5V
+
 GND → GND
 
 - Joystick (VERDE)
 
 VRx → A1
+
 VRy → A2
+
 SW → 3
+
 VCC → 5V
+
 GND → GND
 
 Botón ADMIN (MARRÓN)
@@ -78,7 +97,9 @@ El botón se conecta a GND al pulsar.
 - LEDs indicadores (ROSA)
 
 LED1 → A3
+
 LED2 → 6
+
 Cada LED lleva en serie una resistencia de ≈220 Ω.
 
 Cátodo de cada LED → GND
