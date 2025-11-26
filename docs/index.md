@@ -55,6 +55,7 @@ Los colores correponden a:
 
 
 - Sensor de Temperatura y Humedad DHT11 (MORADO)
+
 | Señal | Pin |
 | ----- | --- |
 | DATA  | 7   |
@@ -63,6 +64,7 @@ Los colores correponden a:
 
 
 - Sensor Ultrasonidos HC-SR04 (AMARILLO)
+
 | Señal | Pin |
 | ----- | --- |
 | TRIG  | 9   |
@@ -72,6 +74,7 @@ Los colores correponden a:
 
 
 - Joystick (VERDE)
+
 | Señal | Pin |
 | ----- | --- |
 | VRx   | A1  |
