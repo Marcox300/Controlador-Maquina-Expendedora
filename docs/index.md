@@ -22,6 +22,7 @@ El montaje físico del proyecto se corresponde al siguiente diagrama:
 ![conexiones](https://raw.githubusercontent.com/Marcox300/Controlador-Maquina-Expendedora/main/img/emp_espendedora.png)
 
 Los colores correponden a:
+
 | Color        | Dispositivo  |
 | ------------ | ------------ |
 | **Rojo**     | 5V           |
