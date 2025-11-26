@@ -107,9 +107,8 @@ Se utiliza para el LED indicador LED2, permitiendo variar su intensidad mediante
 
 - Pines 2 y 3 — Interrupciones externas (INT0 e INT1)
 
-Los dos botones (ADMIN y joystick SW) se conectan aquí para:
-detectar pulsaciones incluso si el micro está en otras tareas,
-garantizar que no se pierdan eventos, mantener una interfaz fluida y fiable.
+Los dos botones (ADMIN y joystick SW) se conectan aquí para 
+detectar pulsaciones incluso si el micro está en otras tareas garantizando la detección en eventos importantes, se explicará más adelante.
 
 ## 3. Software y lógica de la máquina
 
