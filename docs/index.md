@@ -38,6 +38,7 @@ Los colores correponden a:
 #### Conexiones por dispositivo
 
 - LCD 16×2 (NARANJA)
+
 | Señal LCD   | Pin Arduino                            |
 | ----------- | -------------------------------------- |
 | RS          | 12                                     |
