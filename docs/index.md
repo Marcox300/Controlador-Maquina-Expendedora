@@ -16,6 +16,7 @@ Componentes utilizados:
 
 Para más información de los objetivos y el resultado esperado ver enunciado:
 [Descargar PDF del enunciado](Practica3.pdf)
+Aquí se encuentran las funcionalidades básicas que se esperan de cada sensor.
 
 ## 2. Hardware y conexiones
 El montaje físico del proyecto se corresponde al siguiente diagrama:
@@ -113,7 +114,45 @@ detectar pulsaciones incluso si el micro está en otras tareas garantizando la d
 
 ## 3. Software y lógica de la máquina
 
+El software se organiza como una máquina de estados finita:
+
+1. ARRANQUE: parpadeo del LED1 y mensaje "CARGANDO..."
+2. SERVICIO: espera de cliente (subespacio b), muestra de temperatura/humedad, navegación de productos con joystick y preparación de café con LED2 progresivo (subespacio a).
+3. ADMIN: menú de administración con lectura de sensores y edición de precios.
+
+Los espacios y sub espacios usados los definimos:
+
+```cpp
+enum class State { ARRANQUE, SERVICIO, ADMIN };
+enum class Service_substate { ESPERANDO_CLIENTE, MOSTRANDO_PRODUCTOS };
+enum class Admin_substate { MENU, SHOW_TEMP, SHOW_DISTANCE, SHOW_COUNTER, EDIT_PRICES };
+```
+
+Teniendo en cuenta lo que se espera de cada componente (p1 Introducción). La implementación se explica a continuación:
+
+#### **LCD**
+Para mostrar información el reto de este componente es no sobrecargarlocon escrituras constantes.
+Actualizar una pantalla LCD demasiado rápido provoca parpadeos y reduce la legibilidad.
+Para evitarlo, la solución implementada consiste en comparar el contenido nuevo con el previo y solo actualizar cuando exista un cambio.
+Aun así no en todos los casos ha sido posible, por ejemplo:
+
+- La lectura de temperatura y humedad, que se refresca cada cierto intervalo para evitar saturar el sensor DHT.
+
+- La visualización de segundos, que necesariamente cambia cada segundo.
+
+#### **Sensor Ultrasonido HC-SR04**
+El sensor ultrasónico se usa para medir distancias y detectar la presencia de un usuario frente a la máquina.
+Inicialmente se valoró integrarlo dentro de un Arduino Thread para realizar mediciones constantes, pero estas rutinas requieren pequeños delays internos para el envío y recepción del pulso, lo que podría introducir ralentizaciones innecesarias en el resto del sistema.
+
+#### **Joystick analógico**
+Lectura del eje X / Y utilizados para navegar menús. El joystick tiene ruido en las mediciones por eso le ajustamos un rango que conocemos. (m<300 o m>700).
+La lectura del botón se explica más adelante.
+
+
+
+
 ### 3.1. Arduino Threads
+
 
 ### 3.2. Interrupciones
 
