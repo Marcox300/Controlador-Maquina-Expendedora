@@ -175,6 +175,7 @@ Nod flata por mencionar el uso de los botones, el sensor de temperatura y el mec
 Se utilizan threads cooperativos (librería ArduinoThread / ThreadController) para tareas que deben ejecutarse de forma periódica sin bloquear el sistema, por ejemplo:
 - Sensor de Temperatura y Humedad DHT11
 - Contador de tiempo
+
  ¿Por qué utilizamos threads en estos sensores?
 Porque su naturaleza es periódica y no depende del estado. El ultrasonido se usa solo en momentos puntuales (cambio de estado),
 pero la temperatura y humedad, y los tiempos necesitan medirse SIEMPRE durante el uso:
@@ -190,11 +191,13 @@ Por esto, y por las limitaciones de tiempo de lectura del DHT11 es que se decidi
 El proyecto utiliza interrupciones externas de Arduino (INT0 e INT1) para gestionar eventos críticos procedentes de botones físicos:
 - Botón ADMIN → Pin 2 (INT0)
 - Botón del Joystick (SW) → Pin 3 (INT1)
+
 Ambos botones están configurados en modo INPUT_PULLUP.
 
 Motivos para usar interrupciones en lugar de lectura por sondeo:
 - Perder pulsaciones rápidas del usuario.
 - Aumentar la latencia en menús interactivos.
+
 Por ello, las interrupciones garantizan que la placa reacciona inmediatamente.
 
 #### Botón ADMIN
