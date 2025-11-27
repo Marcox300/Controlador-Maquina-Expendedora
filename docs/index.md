@@ -117,7 +117,7 @@ detectar pulsaciones incluso si el micro está en otras tareas garantizando la d
 El software se organiza como una máquina de estados finita:
 
 1. ARRANQUE: parpadeo del LED1 y mensaje "CARGANDO..."
-2. SERVICIO: espera de cliente (subespacio b), muestra de temperatura/humedad, navegación de productos con joystick y preparación de café con LED2 progresivo (subespacio a).
+2. SERVICIO: espera de cliente (subestado b), muestra de temperatura/humedad, navegación de productos con joystick y preparación de café con LED2 progresivo (subestado a).
 3. ADMIN: menú de administración con lectura de sensores y edición de precios.
 
 Los espacios y sub espacios usados los definimos:
@@ -141,6 +141,8 @@ Aun así no en todos los casos ha sido posible, por ejemplo:
 
 - La visualización de segundos, que necesariamente cambia cada segundo.
 
+Como añadido para el simbolo del euro lo he generado a mano.
+
 #### **Sensor Ultrasonido HC-SR04**
 
 El sensor ultrasónico se usa para medir distancias y detectar la presencia de un usuario frente a la máquina.
@@ -156,6 +158,7 @@ La lectura del botón se explica más adelante.
 Los LEDs muestran estados en el sistema. Debido a las limitaciónes propuestas surgen retos:
 
 Evitar bloquear el programa con funciones tipo delay().
+
 En algunos casos es necesario un efecto PWM progresivo (cafetera/tiempo).
 
 Su solución:
@@ -163,16 +166,17 @@ Control por
 ```cpp
 millis()
 ```
-sin bloquear ejecución y
+sin bloquear ejecución compruebo en cada ciclo si ha pasado el tiempo para encenderse o apagarse.
+
 Mapeo de valores analógicos a intensidad PWM (cuando el pin lo permite).
 
 #### Menciones faltantes
 
-Nod flata por mencionar el uso de los botones, el sensor de temperatura y el mecanismo que utilizamos para medir el tiempo. A su vez, la solución de cómo medir el tiempo constantemente.
+Nos falta por mencionar el uso de los botones, el sensor de temperatura y el mecanismo que utilizamos para medir el tiempo. A su vez, la solución de cómo medir el tiempo constantemente.
 
 ### 3.1. Arduino Threads
 
-Se utilizan threads cooperativos (librería ArduinoThread / ThreadController) para tareas que deben ejecutarse de forma periódica sin bloquear el sistema, por ejemplo:
+Se utilizan threads (Estos threads no son paralelos librería ArduinoThread / ThreadController) para tareas que deben ejecutarse de forma periódica sin bloquear el sistema, por ejemplo:
 - Sensor de Temperatura y Humedad DHT11
 - Contador de tiempo
 
@@ -209,6 +213,8 @@ Comportamiento implementado:
 1. Cuando el usuario pulsa el botón (flanco descendente), se dispara INT0.
 2. Guarda el tiempo que ha estado activado y si se ha completado.
 
+En resumen, las interrupciones garantizan que las pulsaciones se detecten aunque el microcontrolador esté ejecutando otras tareas, lo cual no sería fiable usando solo `digitalRead()` periódicos.
+
 #### Botón del Joystick
 Usar interrupción permite validar selección en menús sin retraso perceptible y simplifica la detección de la pulsación solo modificando un flag.
 
@@ -223,7 +229,28 @@ De esta forma se evita que la máquina expendedora quede congelada sin responder
 
 ## 4. Mejoras propuestas
 
+A partir del funcionamiento actual del sistema, se plantean varias mejoras que podrían implementarse en futuras versiones para ampliar las capacidades y mejorar la usabilidad del dispositivo.
+
+4.1. Inclusión de un Motor para Accionamiento Real
+
+Actualmente la máquina expendedora simula el proceso de entrega del producto únicamente mediante indicadores visuales.
+Una mejora significativa sería integrar un motor (servo) que realice la acción de apertura de la máquina expendedora, permitiendo simular de forma más realista el comportamiento de una expendedora real.
+
+La estructura de software actual soporta fácilmente esta ampliación al disponer de estados bien definidos. Por tanto solo faltariía un acople.
+
+4.2. Añadir un Potenciómetro para Controlar el Contraste del LCD
+
+El LCD funciona correctamente, pero no dispone de control físico de contraste.
+Incorporar un potenciómetro dedicado al pin `V0` del LCD permitiría ajustar el contraste en función de la iluminación ambiente.
+
+4.3. Mejora de la Organización de Software
+
+Se debería reorganizar las funciones repetitivas en módulos más independientes para facilitar la modularización y los cambios.
+
 ## 5. Vídeo de la práctica
+
+En el siguiente vídeo se muestra el funcionamiento completo del sistema incluyendo los estados principales y la interacción con los sensores.
+
 [Ver vídeo en OneDrive](https://urjc-my.sharepoint.com/:v:/g/personal/m_morenop_2023_alumnos_urjc_es/EXXsT2KYz1pNpV0Lx879DR4ButtTfbX1o6npgNSIb82OpQ?e=c3xxGh)
 
 ## 6. Repositorio
