@@ -131,6 +131,7 @@ enum class Admin_substate { MENU, SHOW_TEMP, SHOW_DISTANCE, SHOW_COUNTER, EDIT_P
 Teniendo en cuenta lo que se espera de cada componente (p1 Introducción). La implementación se explica a continuación:
 
 #### **LCD**
+
 Para mostrar información el reto de este componente es no sobrecargarlocon escrituras constantes.
 Actualizar una pantalla LCD demasiado rápido provoca parpadeos y reduce la legibilidad.
 Para evitarlo, la solución implementada consiste en comparar el contenido nuevo con el previo y solo actualizar cuando exista un cambio.
@@ -141,22 +142,81 @@ Aun así no en todos los casos ha sido posible, por ejemplo:
 - La visualización de segundos, que necesariamente cambia cada segundo.
 
 #### **Sensor Ultrasonido HC-SR04**
+
 El sensor ultrasónico se usa para medir distancias y detectar la presencia de un usuario frente a la máquina.
 Inicialmente se valoró integrarlo dentro de un Arduino Thread para realizar mediciones constantes, pero estas rutinas requieren pequeños delays internos para el envío y recepción del pulso, lo que podría introducir ralentizaciones innecesarias en el resto del sistema.
 
 #### **Joystick analógico**
+
 Lectura del eje X / Y utilizados para navegar menús. El joystick tiene ruido en las mediciones por eso le ajustamos un rango que conocemos. (m<300 o m>700).
 La lectura del botón se explica más adelante.
 
+#### **LEDs**
 
+Los LEDs muestran estados en el sistema. Debido a las limitaciónes propuestas surgen retos:
 
+Evitar bloquear el programa con funciones tipo delay().
+En algunos casos es necesario un efecto PWM progresivo (cafetera/tiempo).
+
+Su solución:
+Control por 
+```cpp
+millis()
+```
+sin bloquear ejecución y
+Mapeo de valores analógicos a intensidad PWM (cuando el pin lo permite).
+
+#### Menciones faltantes
+
+Nod flata por mencionar el uso de los botones, el sensor de temperatura y el mecanismo que utilizamos para medir el tiempo. A su vez, la solución de cómo medir el tiempo constantemente.
 
 ### 3.1. Arduino Threads
 
+Se utilizan threads cooperativos (librería ArduinoThread / ThreadController) para tareas que deben ejecutarse de forma periódica sin bloquear el sistema, por ejemplo:
+- Sensor de Temperatura y Humedad DHT11
+- Contador de tiempo
+ ¿Por qué utilizamos threads en estos sensores?
+Porque su naturaleza es periódica y no depende del estado. El ultrasonido se usa solo en momentos puntuales (cambio de estado),
+pero la temperatura y humedad, y los tiempos necesitan medirse SIEMPRE durante el uso:
+
+En SERVICIO para mostrar condiciones ambientales
+En ADMIN para registrar datos
+En la parte de café para controlar temporizadores
+
+Además, nos permiten modularizar la lógica. Cada thread actúa como un “módulo independiente”.
+Por esto, y por las limitaciones de tiempo de lectura del DHT11 es que se decidio no implementar la lectura de temperatura y humedad en una función cómo el ultrasonido.
 
 ### 3.2. Interrupciones
+El proyecto utiliza interrupciones externas de Arduino (INT0 e INT1) para gestionar eventos críticos procedentes de botones físicos:
+- Botón ADMIN → Pin 2 (INT0)
+- Botón del Joystick (SW) → Pin 3 (INT1)
+Ambos botones están configurados en modo INPUT_PULLUP.
+
+Motivos para usar interrupciones en lugar de lectura por sondeo:
+- Perder pulsaciones rápidas del usuario.
+- Aumentar la latencia en menús interactivos.
+Por ello, las interrupciones garantizan que la placa reacciona inmediatamente.
+
+#### Botón ADMIN
+
+El botón principal se usa para acceder al modo administrador desde cualquier punto del programa. Además de resetear el servicio.
+La interrupción permite detectar el evento incluso durante procesos largos y garantizar que siempre se entra al menú ADMIN sin latencia.
+Comportamiento implementado:
+
+1. Cuando el usuario pulsa el botón (flanco descendente), se dispara INT0.
+2. Guarda el tiempo que ha estado activado y si se ha completado.
+
+#### Botón del Joystick
+Usar interrupción permite validar selección en menús sin retraso perceptible y simplifica la detección de la pulsación solo modificando un flag.
 
 ### 3.3. Watchdog
+El Watchdog Timer (WDT) es un mecanismo de seguridad del microcontrolador que reinicia automáticamente el sistema en caso de que el programa se bloquee o quede atrapado en un bucle infinito.
+En este proyecto, el watchdog se utiliza para mejorar la fiabilidad del sistema ante posibles bloqueos inesperados.
+
+En nuestro proyecto se inicializa el watchdog al arrancar el sistema, configurándolo para que resetee el Arduino cada 2 segundos.
+En el loop principal se llama periódicamente a ```wdt_reset()``` para indicar que el programa sigue funcionando correctamente y resetear el watchdog.
+
+De esta forma se evita que la máquina expendedora quede congelada sin responder y protege el sistema ante errores de hardware o software.
 
 ## 4. Mejoras propuestas
 
